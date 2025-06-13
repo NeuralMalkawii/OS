@@ -9,102 +9,119 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: Tech Evolution Neutral -->
-    <!-- Application Structure Plan: The application is structured as a single-page dashboard with a main navigation hub that allows users to select one of four core evolutionary themes: 'The User Interface', 'Connectivity & Cloud', 'System Security', and 'Service Model'. This thematic, non-linear design was chosen over a simple chronological report structure to allow users to explore the aspects of Windows' history that interest them most. Each theme presents its content through a series of interactive components, such as clickable timelines, comparison toggles, and dynamic charts. This hub-and-spoke model encourages exploration and makes the dense information from the report more digestible and engaging by focusing on specific narratives of change. The user flow is simple: select a theme from the top navigation, interact with the components in that section, and easily switch to other themes. -->
-    <!-- Visualization & Content Choices: 
-        - Report Info: Start Menu evolution (Win95-Win11). Goal: Compare. Viz/Method: Interactive timeline buttons. Interaction: Clicking a version button updates a central display with a visual representation and key features. Justification: More engaging and direct comparison than a static table. Library: HTML/CSS/JS.
-        - Report Info: Windows 8 vs. Windows 10 touch interface. Goal: Compare/Contrast. Viz/Method: A two-card layout with a toggle. Interaction: The toggle highlights the active view. Justification: Clearly visualizes the "course correction" narrative between the two versions. Library: HTML/CSS/JS.
-        - Report Info: Internet Explorer vs. Edge. Goal: Compare. Viz/Method: Donut charts visualizing qualitative differences (e.g., Standards Compliance, Security Focus). Interaction: Hovering over chart segments reveals tooltips with context. Justification: Provides a quick, scannable visual summary of the strategic shift in Microsoft's browser philosophy. Library: Chart.js.
-        - Report Info: Security features (UAC, Defender, TPM). Goal: Show impact/evolution. Viz/Method: An interactive card layout. Interaction: Clicking on a card reveals detailed information about the feature. Justification: Allows users to progressively disclose information, starting with a high-level overview and drilling down into details. Library: HTML/CSS/JS.
-        - Report Info: 'Windows as a Service' model. Goal: Show pros/cons. Viz/Method: A horizontal bar chart. Interaction: Bars are clickable, updating a text area with details on the advantage or disadvantage. Justification: Turns a simple list into an interactive exploration, quantifying the qualitative points for visual impact. Library: Chart.js.
-    -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body { font-family: 'Inter', sans-serif; }
         .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 300px; max-height: 350px; }
         @media (min-width: 768px) { .chart-container { height: 350px; } }
         .nav-button { transition: all 0.3s ease; }
-        .nav-button.active { background-color: #2563EB; color: white; }
+        .nav-button.active { background-color: #2563EB; color: white; box-shadow: 0 4px 14px 0 rgb(0 118 255 / 39%);}
         .nav-button:not(.active):hover { background-color: #EFF6FF; }
-        .content-section { display: none; }
-        .content-section.active { display: block; }
+        .content-section { display: none; opacity: 0; transition: opacity 0.5s ease-in-out; }
+        .content-section.active { display: block; opacity: 1; }
         .timeline-btn { transition: all 0.2s ease-in-out; }
-        .timeline-btn.active { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .timeline-btn.active { transform: translateY(-5px) scale(1.05); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); background-color: #2563EB; color: white;}
         .security-card, .service-bar { cursor: pointer; transition: all 0.2s ease-in-out; }
         .security-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); }
+        .detail-content { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-slate-100 text-slate-800">
 
     <div class="container mx-auto p-4 md:p-8">
-        <header class="text-center mb-8">
+        <header class="text-center mb-10">
             <h1 class="text-4xl md:text-5xl font-bold text-blue-700">The Interactive Evolution of Windows</h1>
             <p class="mt-2 text-lg text-slate-600">From a DOS Shell to a Cloud-Powered Service</p>
         </header>
 
-        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
-            <button data-section="ui" class="nav-button active font-semibold py-2 px-4 rounded-full border border-slate-300">
-                The User Interface
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-10">
+            <button data-section="ui" class="nav-button active font-semibold py-2 px-5 rounded-full border border-slate-300 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                User Interface
             </button>
-            <button data-section="connectivity" class="nav-button font-semibold py-2 px-4 rounded-full border border-slate-300">
-                Connectivity & Cloud
+            <button data-section="architecture" class="nav-button font-semibold py-2 px-5 rounded-full border border-slate-300 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0L7.85 5.89a1.5 1.5 0 00-1.28.93l-2.68 5.2a1.5 1.5 0 001.04 2.45l5.2 1.04a1.5 1.5 0 001.92-1.92l-1.04-5.2a1.5 1.5 0 00-.93-1.28L11.49 3.17zm-2.98 1.19l1.64 3.28a.5.5 0 01.31.43l.35 1.73c.03.15-.12.29-.28.26l-1.73-.35a.5.5 0 01-.43-.31L5.05 6.09c-.07-.15.02-.33.18-.33h3.28zM5 14a1 1 0 100 2h10a1 1 0 100-2H5z" clip-rule="evenodd" /></svg>
+                Core Architecture
             </button>
-            <button data-section="security" class="nav-button font-semibold py-2 px-4 rounded-full border border-slate-300">
+            <button data-section="connectivity" class="nav-button font-semibold py-2 px-5 rounded-full border border-slate-300 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 16.5A1.5 1.5 0 014 15V5a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0116 5v10a1.5 1.5 0 01-1.5 1.5h-9zM5 5a.5.5 0 00-.5.5v10a.5.5 0 00.5.5h9a.5.5 0 00.5-.5V5a.5.5 0 00-.5-.5H5z" /><path d="M7 8a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" /></svg>
+                Connectivity
+            </button>
+            <button data-section="security" class="nav-button font-semibold py-2 px-5 rounded-full border border-slate-300 flex items-center gap-2">
+                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5.05a12.005 12.005 0 01-1.12 6.07C.324 14.868 2.228 17.5 5.5 18.913a12.012 12.012 0 001.13 2.05c.563.81 1.768.81 2.33 0A12.012 12.012 0 0010 21c.393 0 .783-.04 1.163-.114a12.012 12.012 0 001.13-2.05c3.272-1.413 5.176-4.045 4.454-7.788a12.005 12.005 0 01-1.12-6.07A11.954 11.954 0 0110 1.944zM9 13a1 1 0 112 0v2a1 1 0 11-2 0v-2zm1-8a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
                 System Security
             </button>
-            <button data-section="service" class="nav-button font-semibold py-2 px-4 rounded-full border border-slate-300">
+            <button data-section="service" class="nav-button font-semibold py-2 px-5 rounded-full border border-slate-300 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.707-10.293a1 1 0 00-1.414-1.414l-3 3a1 1 0 001.414 1.414L10 9.414l3.293 3.293a1 1 0 001.414-1.414l-4-4z" clip-rule="evenodd" /></svg>
                 Service Model
             </button>
         </nav>
 
         <main id="app-content">
 
-            <section id="ui-section" class="content-section active space-y-12">
-                <div class="bg-white p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-center mb-1">The Start Menu: A Journey Through Time</h2>
-                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">The Start Menu is the quintessential Windows feature. It began as a revolutionary replacement for the cluttered Program Manager in Windows 95 and has evolved dramatically over the decades. Click on a version below to see how its design and function shifted to meet new user expectations and hardware paradigms, from the desktop to touch-centric devices.</p>
+            <section id="ui-section" class="content-section active space-y-12" role="region" aria-labelledby="ui-heading">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 id="ui-heading" class="text-3xl font-bold text-center mb-1">The Start Menu: A Journey Through Time</h2>
+                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">The Start Menu is the quintessential Windows feature. It began as a revolutionary replacement for the cluttered Program Manager in Windows 95 and has evolved dramatically. Click a version to see how its design shifted to meet new user expectations and hardware paradigms.</p>
                     <div id="timeline-nav" class="flex justify-center items-end flex-wrap gap-4 p-4"></div>
                     <div id="start-menu-display" class="mt-6 p-6 bg-slate-50 rounded-lg min-h-[300px] flex flex-col md:flex-row items-center gap-6">
-                        <div id="start-menu-visual" class="w-full md:w-1/2 flex justify-center items-center"></div>
-                        <div id="start-menu-details" class="w-full md:w-1/2"></div>
+                        <div id="start-menu-visual" class="w-full md:w-1/2 flex justify-center items-center" aria-hidden="true"></div>
+                        <div id="start-menu-details" class="w-full md:w-1/2" aria-live="polite"></div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-center mb-1">The Touch Dilemma: A Tale of Two Windows</h2>
-                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">The rise of tablets forced Microsoft to radically rethink its interface. Windows 8 was a bold, touch-first gamble that alienated many desktop users. Windows 10 represented a major course correction, seeking to balance the needs of both touch and traditional PC users. This comparison highlights the key differences in their approach to hybrid computing.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-3xl font-bold text-center mb-1">The Touch Dilemma: A Tale of Two Windows</h2>
+                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">The rise of tablets forced Microsoft to radically rethink its interface. Windows 8 was a bold, touch-first gamble that alienated many. Windows 10 represented a major course correction. This comparison highlights the key differences in their approach.</p>
                     <div class="grid md:grid-cols-2 gap-6">
-                        <div class="border-4 border-red-400 p-6 rounded-lg bg-white">
-                            <h3 class="text-xl font-bold text-red-600">Windows 8: The Touch-Centric Gamble</h3>
-                             <ul id="win8-details" class="mt-4 space-y-2 list-disc list-inside text-slate-700"></ul>
-                        </div>
-                        <div class="border-4 border-green-400 p-6 rounded-lg bg-white">
-                            <h3 class="text-xl font-bold text-green-600">Windows 10: The Hybrid Solution</h3>
+                        <figure class="border-4 border-red-400 p-6 rounded-lg bg-white">
+                            <figcaption class="text-xl font-bold text-red-600">Windows 8: The Touch-Centric Gamble</figcaption>
+                            <ul id="win8-details" class="mt-4 space-y-2 list-disc list-inside text-slate-700"></ul>
+                        </figure>
+                        <figure class="border-4 border-green-400 p-6 rounded-lg bg-white">
+                            <figcaption class="text-xl font-bold text-green-600">Windows 10: The Hybrid Solution</figcaption>
                             <ul id="win10-details" class="mt-4 space-y-2 list-disc list-inside text-slate-700"></ul>
+                        </figure>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="architecture-section" class="content-section space-y-12" role="region" aria-labelledby="architecture-heading">
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 id="architecture-heading" class="text-3xl font-bold text-center mb-1">Core Architecture Shifts</h2>
+                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">Beyond the interface, the very foundation of Windows underwent monumental changes. These architectural leaps enabled new levels of stability, security, and performance that define the modern computing era.</p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-indigo-50 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold text-indigo-800">The NT Kernel: A New Foundation</h3>
+                             <p id="nt-kernel-info" class="mt-2 text-slate-700"></p>
+                        </div>
+                        <div class="bg-cyan-50 p-6 rounded-lg">
+                           <h3 class="text-xl font-bold text-cyan-800">The Leap to 64-Bit</h3>
+                           <p id="64bit-info" class="mt-2 text-slate-700"></p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <section id="connectivity-section" class="content-section space-y-12">
-                <div class="bg-white p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-center mb-1">The Browser Wars: From IE to AI-Powered Edge</h2>
-                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">Microsoft's browser has always been a key part of the Windows story. Internet Explorer's deep integration helped it dominate the market but led to stagnation and security issues. The modern, Chromium-based Edge represents a complete strategic shift, focusing on performance, standards, and deep integration with AI and cloud services. The charts below visualize this strategic pivot.</p>
-                     <div class="grid md:grid-cols-2 gap-8">
+            <section id="connectivity-section" class="content-section space-y-12" role="region" aria-labelledby="connectivity-heading">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 id="connectivity-heading" class="text-3xl font-bold text-center mb-1">The Browser Wars: From IE to AI-Powered Edge</h2>
+                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">Microsoft's browser has always been a key part of the Windows story. Internet Explorer stagnated after market dominance, while the Chromium-based Edge represents a strategic shift to performance, standards, and AI integration. The charts below visualize this pivot.</p>
+                    <div class="grid md:grid-cols-2 gap-8">
                         <div>
-                            <h3 class="text-lg font-semibold text-center mb-2">Internet Explorer (Legacy)</h3>
+                            <h3 class="text-lg font-semibold text-center mb-2">Internet Explorer (Legacy Focus)</h3>
                             <div class="chart-container"><canvas id="ie-chart"></canvas></div>
                         </div>
                         <div>
-                            <h3 class="text-lg font-semibold text-center mb-2">Microsoft Edge (Modern)</h3>
+                            <h3 class="text-lg font-semibold text-center mb-2">Microsoft Edge (Modern Focus)</h3>
                             <div class="chart-container"><canvas id="edge-chart"></canvas></div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-center mb-1">The Cloud Connection: OneDrive & Azure AD</h2>
-                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">Modern Windows is inextricably linked to the cloud. This integration transforms the OS from a self-contained system into an intelligent client for distributed services. OneDrive reimagines file storage, while Azure Active Directory redefines identity and access management for the cloud era, blurring the lines between local and remote computing.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 class="text-3xl font-bold text-center mb-1">The Cloud Connection: OneDrive & Azure AD</h2>
+                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">Modern Windows is inextricably linked to the cloud, transforming it from a self-contained system to an intelligent client. OneDrive reimagines file storage, while Azure Active Directory redefines identity for the cloud era.</p>
                     <div class="grid md:grid-cols-2 gap-6">
                         <div class="bg-blue-50 p-6 rounded-lg">
                             <h3 class="text-xl font-bold text-blue-800">OneDrive: Your Files, Everywhere</h3>
@@ -118,42 +135,47 @@
                 </div>
             </section>
             
-            <section id="security-section" class="content-section">
-                <div class="bg-white p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-center mb-1">Fortifying Windows: A Multi-Layered Defense</h2>
-                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">As Windows' popularity grew, so did its appeal as a target for attack. Microsoft responded with a defense-in-depth strategy, moving from basic software protection to a sophisticated, hardware-assisted security model. Explore the key pillars of this evolution by clicking on the features below to learn about their impact.</p>
-                    <div class="grid md:grid-cols-3 gap-6 mb-6">
-                        <div id="uac-card" class="security-card bg-amber-50 p-4 rounded-lg border-2 border-amber-200 text-center">
+            <section id="security-section" class="content-section" role="region" aria-labelledby="security-heading">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 id="security-heading" class="text-3xl font-bold text-center mb-1">Fortifying Windows: A Multi-Layered Defense</h2>
+                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">As Windows' popularity grew, so did its appeal as a target. Microsoft responded with a defense-in-depth strategy, moving from basic software protection to a sophisticated, hardware-assisted security model. Explore the key pillars of this evolution by clicking below.</p>
+                    <div id="security-cards-container" class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div data-sec="uac" class="security-card bg-amber-50 p-4 rounded-lg border-2 border-amber-200 text-center">
                             <h3 class="font-bold text-amber-800">User Account Control (UAC)</h3>
                             <p class="text-sm text-amber-700">Principle of Least Privilege</p>
                         </div>
-                        <div id="defender-card" class="security-card bg-teal-50 p-4 rounded-lg border-2 border-teal-200 text-center">
+                        <div data-sec="defender" class="security-card bg-teal-50 p-4 rounded-lg border-2 border-teal-200 text-center">
                             <h3 class="font-bold text-teal-800">Windows Defender</h3>
                              <p class="text-sm text-teal-700">Integrated Antivirus</p>
                         </div>
-                        <div id="tpm-card" class="security-card bg-indigo-50 p-4 rounded-lg border-2 border-indigo-200 text-center">
+                        <div data-sec="tpm" class="security-card bg-indigo-50 p-4 rounded-lg border-2 border-indigo-200 text-center">
                            <h3 class="font-bold text-indigo-800">Trusted Platform Module (TPM)</h3>
                             <p class="text-sm text-indigo-700">Hardware Root of Trust</p>
                         </div>
                     </div>
-                    <div id="security-details" class="bg-slate-100 p-6 rounded-lg min-h-[150px]">
+                    <div id="security-details" class="bg-slate-100 p-6 rounded-lg min-h-[150px]" aria-live="polite">
                         <p class="text-slate-600">Click a feature above to see details.</p>
                     </div>
                 </div>
             </section>
 
-            <section id="service-section" class="content-section">
-                <div class="bg-white p-6 rounded-xl shadow-sm">
-                    <h2 class="text-2xl font-bold text-center mb-1">Windows as a Service (WaaS)</h2>
-                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">With Windows 10, Microsoft abandoned the traditional cycle of major version releases for a model of continuous updates. This 'Windows as a Service' paradigm fundamentally changed the relationship between Microsoft and its users, bringing both significant advantages and new concerns. The chart below visualizes the balance of these factors. Click on a bar to learn more.</p>
+            <section id="service-section" class="content-section" role="region" aria-labelledby="service-heading">
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <h2 id="service-heading" class="text-3xl font-bold text-center mb-1">Windows as a Service (WaaS)</h2>
+                    <p class="text-center text-slate-500 mb-6 max-w-3xl mx-auto">With Windows 10, Microsoft abandoned the traditional cycle of major version releases for a model of continuous updates. This paradigm fundamentally changed the relationship between Microsoft and its users, bringing both significant advantages and new concerns. Click a bar to learn more.</p>
                     <div class="chart-container h-96 md:h-[450px]"><canvas id="waas-chart"></canvas></div>
-                    <div id="waas-details" class="mt-6 bg-slate-100 p-6 rounded-lg min-h-[100px]">
+                    <div id="waas-details" class="mt-6 bg-slate-100 p-6 rounded-lg min-h-[100px]" aria-live="polite">
                         <p class="text-slate-600">Click a bar on the chart to see details.</p>
                     </div>
                 </div>
             </section>
 
         </main>
+        
+        <footer class="text-center mt-12 pt-8 border-t border-slate-300">
+            <p class="text-slate-500 text-sm">Created to demonstrate the key evolutionary stages of the Microsoft Windows operating system.</p>
+            <p class="text-slate-400 text-xs mt-1">Interactive visualization by Gemini. All product names are trademarks of Microsoft Corporation.</p>
+        </footer>
     </div>
 
 <script>
@@ -163,37 +185,37 @@ const data = {
             id: 'win95', 
             name: 'Windows 95', 
             visual: `<div class="w-48 h-32 bg-gray-300 border-2 border-gray-400 rounded-sm flex flex-col p-1 font-mono text-xs"><div class="bg-blue-800 text-white px-1">Program Manager</div><div class="flex-grow grid grid-cols-3 gap-1 p-1"> <div class="bg-white border border-gray-400"></div> <div class="bg-white border border-gray-400"></div> <div class="bg-white border border-gray-400"></div> <div class="bg-white border border-gray-400"></div> <div class="bg-white border border-gray-400"></div> <div class="bg-white border border-gray-400"></div></div></div><div class="text-4xl text-red-500 font-bold mx-2">→</div><div class="w-48 h-32 bg-teal-600 border-2 border-black rounded-sm flex items-end"><div class="w-full bg-gray-400 h-6 flex items-center"><div class="bg-green-600 text-white font-bold text-xs p-1 rounded-r-md">► Start</div></div></div>`,
-            details: `<h3 class="text-xl font-bold text-slate-800">Revolutionary Central Hub</h3><p class="mt-2 text-slate-600">Replaced the cluttered Program Manager with a single, cascading Start Menu. It provided a centralized, intuitive point of access for programs, documents, settings, and shutdown, revolutionizing PC usability and setting a new standard for GUIs.</p>`
+            details: `<h3 class="text-xl font-bold text-slate-800 detail-content">Revolutionary Central Hub</h3><p class="mt-2 text-slate-600 detail-content">Replaced the cluttered Program Manager with a single, cascading Start Menu. It provided a centralized, intuitive point of access for programs, documents, and settings, revolutionizing PC usability.</p>`
         },
         { 
             id: 'winXP', 
             name: 'Windows XP',
             visual: `<div class="w-56 h-40 bg-blue-500 rounded-t-lg border-2 border-blue-700 flex flex-col-reverse"><div class="bg-gradient-to-r from-blue-700 to-blue-500 h-8 flex items-center px-2"><div class="bg-green-500 hover:bg-green-400 text-white font-bold text-sm p-1 rounded-md flex items-center gap-1">start</div></div></div>`,
-            details: `<h3 class="text-xl font-bold text-slate-800">Organized Two-Column Layout</h3><p class="mt-2 text-slate-600">The first major redesign introduced a two-column layout. The left column showed pinned and frequently used apps, while the right provided quick access to user folders like 'My Documents' and system locations, enhancing workflow efficiency.</p>`
+            details: `<h3 class="text-xl font-bold text-slate-800 detail-content">Organized Two-Column Layout</h3><p class="mt-2 text-slate-600 detail-content">The first major redesign introduced a two-column layout. The left column showed pinned and frequently used apps, while the right provided quick access to user folders and system locations, enhancing workflow efficiency.</p>`
         },
         { 
             id: 'win7', 
             name: 'Windows 7',
             visual: `<div class="w-56 h-40 bg-gray-800 bg-opacity-70 backdrop-blur-sm rounded-t-lg border-2 border-gray-500 flex flex-col-reverse"><div class="bg-gray-900 bg-opacity-50 h-8 flex items-center px-2"><div class="w-7 h-7 bg-blue-400 rounded-full flex items-center justify-center text-white font-bold shadow-lg">❖</div></div></div>`,
-            details: `<h3 class="text-xl font-bold text-slate-800">Search and Jump Lists</h3><p class="mt-2 text-slate-600">Integrated a powerful search box, allowing users to instantly find files, programs, and settings. It also introduced 'Jump Lists' for quick access to recent files and common tasks within an application, streamlining navigation.</p>`
+            details: `<h3 class="text-xl font-bold text-slate-800 detail-content">Search and Jump Lists</h3><p class="mt-2 text-slate-600 detail-content">Integrated a powerful search box, allowing users to instantly find files, programs, and settings. It also introduced 'Jump Lists' for quick access to recent files and common tasks within an application.</p>`
         },
         { 
             id: 'win8', 
             name: 'Windows 8',
             visual: `<div class="w-64 h-40 bg-purple-600 p-2 grid grid-cols-4 grid-rows-2 gap-1.5"><div class="bg-blue-400 rounded-sm"></div><div class="col-span-2 bg-orange-400 rounded-sm"></div><div class="bg-green-400 rounded-sm"></div><div class="col-span-2 bg-red-400 rounded-sm"></div><div class="bg-yellow-400 rounded-sm"></div><div class="bg-teal-400 rounded-sm"></div></div>`,
-            details: `<h3 class="text-xl font-bold text-slate-800">The Full-Screen Start Screen</h3><p class="mt-2 text-slate-600">Radically replaced the Start Menu with a full-screen, tile-based interface. 'Live Tiles' showed dynamic information, but the touch-first design was disorienting for desktop users and disrupted established workflows, leading to significant criticism.</p>`
+            details: `<h3 class="text-xl font-bold text-slate-800 detail-content">The Full-Screen Start Screen</h3><p class="mt-2 text-slate-600 detail-content">Radically replaced the Start Menu with a full-screen, tile-based interface. 'Live Tiles' showed dynamic information, but the touch-first design was disorienting for desktop users and disrupted established workflows.</p>`
         },
         { 
             id: 'win10', 
             name: 'Windows 10',
             visual: `<div class="w-64 h-40 bg-gray-800 rounded-md flex"><div class="w-1/2 bg-gray-900 p-1 space-y-1"><div class="w-full h-4 bg-gray-700 rounded-sm"></div><div class="w-full h-4 bg-gray-700 rounded-sm"></div><div class="w-full h-4 bg-gray-700 rounded-sm"></div></div><div class="w-1/2 p-1 grid grid-cols-2 gap-1"><div class="bg-blue-500 rounded-sm"></div><div class="bg-red-500 rounded-sm"></div><div class="bg-green-500 rounded-sm"></div><div class="bg-yellow-500 rounded-sm"></div></div></div>`,
-            details: `<h3 class="text-xl font-bold text-slate-800">The Hybrid Return</h3><p class="mt-2 text-slate-600">In response to feedback, Windows 10 brought back the Start Menu in a hybrid form. It blended a Windows 7-style app list on the left with Windows 8-style Live Tiles on the right, successfully balancing familiarity with modern touch elements.</p>`
+            details: `<h3 class="text-xl font-bold text-slate-800 detail-content">The Hybrid Return</h3><p class="mt-2 text-slate-600 detail-content">In response to feedback, Windows 10 brought back the Start Menu in a hybrid form. It blended a Windows 7-style app list on the left with Windows 8-style Live Tiles on the right, successfully balancing familiarity with modern touch elements.</p>`
         },
         { 
             id: 'win11', 
             name: 'Windows 11',
             visual: `<div class="w-64 h-40 bg-white bg-opacity-70 backdrop-blur-sm rounded-lg p-2 shadow-lg"><div class="w-full h-6 bg-gray-200 rounded-md"></div><div class="p-2 grid grid-cols-4 gap-2 mt-2"><div class="w-8 h-8 bg-blue-400 rounded-md"></div><div class="w-8 h-8 bg-red-400 rounded-md"></div><div class="w-8 h-8 bg-green-400 rounded-md"></div><div class="w-8 h-8 bg-yellow-400 rounded-md"></div></div></div>`,
-            details: `<h3 class="text-xl font-bold text-slate-800">Centered and Simplified</h3><p class="mt-2 text-slate-600">Redesigned with a centered layout, removing Live Tiles in favor of a clean grid of pinned apps and a 'Recommended' section for recent files. This modernized design prioritizes search and content discovery over dynamic information display in the Start Menu itself.</p>`
+            details: `<h3 class="text-xl font-bold text-slate-800 detail-content">Centered and Simplified</h3><p class="mt-2 text-slate-600 detail-content">Redesigned with a centered layout, removing Live Tiles in favor of a clean grid of pinned apps and a 'Recommended' section. This modernized design prioritizes search and content discovery over dynamic information.</p>`
         },
     ],
     touchUI: {
@@ -212,24 +234,26 @@ const data = {
             "Balanced the needs of traditional PC users and hybrid devices."
         ]
     },
+    architecture: {
+        ntKernel: "The move from a DOS-based architecture to the Windows NT (New Technology) kernel was arguably the most important evolution. Introduced to consumers with Windows XP, the NT kernel provided true multitasking, improved stability, and a robust security model that separated system processes from user applications, drastically reducing system-wide crashes.",
+        bit64: "Windows XP Professional x64 Edition began the transition to 64-bit computing, allowing the OS to use vastly more system memory ($>$4GB). This was crucial for the rise of demanding applications, high-end gaming, and server workloads, paving the way for the powerful computers we use today. Most modern PCs now run a 64-bit version of Windows."
+    },
     connectivity: {
         ie: {
             labels: ['Market Dominance', 'Standards Compliance', 'Security', 'Innovation Speed'],
-            data: [95, 20, 30, 25],
-            description: "IE's strategy was deep OS integration to capture the market. While it introduced millions to the web, it eventually stagnated, suffering from poor standards support and major security flaws, which made it a liability for developers and users alike."
+            data: [95, 20, 30, 25]
         },
         edge: {
             labels: ['Ecosystem Integration', 'Standards Compliance', 'Security', 'Innovation Speed'],
-            data: [90, 95, 90, 85],
-            description: "Edge focuses on being a fast, secure, and standards-compliant browser. Its key strategy is deep integration with Microsoft 365 and AI services like Copilot, aiming to be a productivity tool rather than just a web gateway."
+            data: [90, 95, 90, 85]
         },
         onedrive: "Deeply woven into File Explorer, OneDrive blurs the line between local and cloud storage. Features like 'Files On-Demand' conserve local disk space while providing seamless access to all cloud files, fundamentally changing data management in Windows.",
-        azure: "Azure AD is a cloud-based identity service that manages user sign-ins and access to both Microsoft s services (like Microsoft 365) and third-party apps. It shifts critical security functions from the local machine to the cloud, enabling secure access from anywhere."
+        azure: "Azure AD (now Entra ID) is a cloud-based identity service that manages user sign-ins and access to both Microsoft’s services and third-party apps. It shifts critical security functions from the local machine to the cloud, enabling secure access from anywhere."
     },
     security: {
-        uac: { title: "User Account Control (UAC)", details: "Introduced in Vista, UAC mitigates malware by enforcing the principle of least privilege. It prompts for user consent before allowing applications to make system-wide changes, preventing unauthorized installations and modifications. Though initially criticized for being intrusive, it fundamentally improved Windows' default security posture." },
-        defender: { title: "Microsoft Defender", details: "Evolving from a simple anti-spyware tool to a full-featured antivirus integrated directly into the OS (starting with Windows 8), Defender raised the baseline security for all users. It provides built-in, automatically updated protection against viruses and malware, eliminating the need for many users to seek third-party solutions." },
-        tpm: { title: "Trusted Platform Module (TPM)", details: "The TPM is a hardware-based security chip that provides a secure 'root of trust'. It protects cryptographic keys used for features like BitLocker full-disk encryption and Windows Hello biometric login. Making TPM 2.0 mandatory for Windows 11 represents a major shift towards hardware-enforced security." }
+        uac: { title: "User Account Control (UAC)", details: "Introduced in Vista, UAC mitigates malware by enforcing the principle of least privilege. It prompts for user consent before allowing applications to make system-wide changes, preventing unauthorized installations. Though initially intrusive, it fundamentally improved Windows' default security posture." },
+        defender: { title: "Microsoft Defender", details: "Evolving from a simple anti-spyware tool to a full-featured antivirus integrated directly into the OS (starting with Windows 8), Defender raised the baseline security for all users. It provides built-in, automatically updated protection against viruses and malware." },
+        tpm: { title: "Trusted Platform Module (TPM)", details: "The TPM is a hardware-based security chip that provides a secure 'root of trust'. It protects cryptographic keys used for features like BitLocker disk encryption and Windows Hello biometric login. Making TPM 2.0 mandatory for Windows 11 represents a major shift towards hardware-enforced security." }
     },
     waas: {
         labels: ['Faster Feature Access', 'Enhanced Security', 'Platform Consistency', 'Forced Updates', 'Potential Instability', 'Privacy Concerns'],
@@ -244,27 +268,36 @@ const data = {
     }
 };
 
-let activeChart = null;
-
-function initApp() {
-    setupNavigation();
-    setupStartMenuTimeline();
-    setupTouchUI();
-    setupConnectivity();
-    setupSecurity();
-    setupWaaS();
+document.addEventListener('DOMContentLoaded', () => {
     
-    document.querySelector('.nav-button[data-section="ui"]').click();
-    document.querySelector('.timeline-btn[data-id="win95"]').click();
-    document.getElementById('uac-card').click();
-}
+    function initApp() {
+        setupNavigation();
+        setupStartMenuTimeline();
+        setupTouchUI();
+        setupArchitecture();
+        setupConnectivity();
+        setupSecurity();
+        setupWaaS();
+        
+        // Set initial state
+        document.querySelector('.nav-button[data-section="ui"]').click();
+        document.querySelector('.timeline-btn[data-id="win95"]').click();
+        document.querySelector('.security-card[data-sec="uac"]').click();
+        
+        const waasChart = document.getElementById('waas-chart');
+        if (waasChart.chart) {
+            waasChart.chart.options.onClick(null, [{index: 0}]);
+        }
+    }
 
-function setupNavigation() {
-    const navButtons = document.querySelectorAll('.nav-button');
-    const sections = document.querySelectorAll('.content-section');
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            navButtons.forEach(btn => btn.classList.remove('active'));
+    function setupNavigation() {
+        const navContainer = document.querySelector('nav');
+        const sections = document.querySelectorAll('.content-section');
+        navContainer.addEventListener('click', (e) => {
+            const button = e.target.closest('.nav-button');
+            if (!button) return;
+
+            document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             
             const sectionId = button.dataset.section + '-section';
@@ -272,162 +305,150 @@ function setupNavigation() {
                 section.classList.toggle('active', section.id === sectionId);
             });
         });
-    });
-}
+    }
 
-function setupStartMenuTimeline() {
-    const navContainer = document.getElementById('timeline-nav');
-    const visualEl = document.getElementById('start-menu-visual');
-    const detailsEl = document.getElementById('start-menu-details');
+    function setupStartMenuTimeline() {
+        const navContainer = document.getElementById('timeline-nav');
+        const visualEl = document.getElementById('start-menu-visual');
+        const detailsEl = document.getElementById('start-menu-details');
 
-    data.startMenu.forEach(version => {
-        const button = document.createElement('button');
-        button.className = 'timeline-btn bg-white py-2 px-4 rounded-lg shadow-md border-2 border-transparent hover:border-blue-500';
-        button.textContent = version.name;
-        button.dataset.id = version.id;
-        button.addEventListener('click', () => {
-            document.querySelectorAll('.timeline-btn').forEach(btn => btn.classList.remove('active', 'bg-blue-600', 'text-white', 'border-blue-700'));
-            button.classList.add('active', 'bg-blue-600', 'text-white', 'border-blue-700');
+        data.startMenu.forEach(version => {
+            const button = document.createElement('button');
+            button.className = 'timeline-btn bg-white py-2 px-4 rounded-lg shadow-md border-2 border-transparent hover:border-blue-500';
+            button.textContent = version.name;
+            button.dataset.id = version.id;
+            navContainer.appendChild(button);
+        });
+        
+        navContainer.addEventListener('click', (e) => {
+            const button = e.target.closest('.timeline-btn');
+            if (!button) return;
+            
+            const version = data.startMenu.find(v => v.id === button.dataset.id);
+            if (!version) return;
+
+            navContainer.querySelectorAll('.timeline-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
             
             visualEl.innerHTML = version.visual;
             detailsEl.innerHTML = version.details;
         });
-        navContainer.appendChild(button);
-    });
-}
+    }
 
-function setupTouchUI() {
-    const win8List = document.getElementById('win8-details');
-    const win10List = document.getElementById('win10-details');
-    data.touchUI.win8.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        win8List.appendChild(li);
-    });
-    data.touchUI.win10.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        win10List.appendChild(li);
-    });
-}
+    function setupTouchUI() {
+        const win8List = document.getElementById('win8-details');
+        const win10List = document.getElementById('win10-details');
+        data.touchUI.win8.forEach(item => win8List.innerHTML += `<li>${item}</li>`);
+        data.touchUI.win10.forEach(item => win10List.innerHTML += `<li>${item}</li>`);
+    }
 
-function createDoughnutChart(canvasId, chartData) {
-    const ctx = document.getElementById(canvasId).getContext('2d');
-    const isIE = canvasId === 'ie-chart';
-    return new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: chartData.labels,
-            datasets: [{
-                data: chartData.data,
-                backgroundColor: isIE 
-                    ? ['#FBBF24', '#F87171', '#FCA5A5', '#FECACA']
-                    : ['#60A5FA', '#34D399', '#4ADE80', '#A78BFA'],
-                borderColor: '#F9FAFB',
-                borderWidth: 4
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'bottom', labels: { color: '#475569' } },
-                tooltip: {
-                    bodyFont: { size: 14 },
-                    titleFont: { size: 16, weight: 'bold' }
-                }
+    function setupArchitecture() {
+        document.getElementById('nt-kernel-info').textContent = data.architecture.ntKernel;
+        document.getElementById('64bit-info').textContent = data.architecture.bit64;
+    }
+
+    function createDoughnutChart(canvasId, chartData) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        const isIE = canvasId === 'ie-chart';
+        return new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    data: chartData.data,
+                    backgroundColor: isIE 
+                        ? ['#FBBF24', '#F87171', '#FCA5A5', '#FECACA']
+                        : ['#60A5FA', '#34D399', '#4ADE80', '#A78BFA'],
+                    borderColor: '#F1F5F9',
+                    borderWidth: 4
+                }]
             },
-            cutout: '60%'
-        }
-    });
-}
-
-function setupConnectivity() {
-    createDoughnutChart('ie-chart', data.connectivity.ie);
-    createDoughnutChart('edge-chart', data.connectivity.edge);
-    document.getElementById('onedrive-info').textContent = data.connectivity.onedrive;
-    document.getElementById('azure-info').textContent = data.connectivity.azure;
-}
-
-function setupSecurity() {
-    const cards = {
-        uac: document.getElementById('uac-card'),
-        defender: document.getElementById('defender-card'),
-        tpm: document.getElementById('tpm-card')
-    };
-    const detailsEl = document.getElementById('security-details');
-
-    Object.keys(cards).forEach(key => {
-        cards[key].addEventListener('click', () => {
-            Object.values(cards).forEach(card => card.classList.remove('ring-2', 'ring-blue-500'));
-            cards[key].classList.add('ring-2', 'ring-blue-500');
-
-            const item = data.security[key];
-            detailsEl.innerHTML = `<h3 class="text-xl font-bold text-slate-800">${item.title}</h3><p class="mt-2 text-slate-600">${item.details}</p>`;
-        });
-    });
-}
-
-function setupWaaS() {
-    const ctx = document.getElementById('waas-chart').getContext('2d');
-    const detailsEl = document.getElementById('waas-details');
-    const chartData = data.waas;
-
-    const chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: chartData.labels,
-            datasets: [{
-                label: 'Impact Score',
-                data: chartData.data.map(d => d.value),
-                backgroundColor: chartData.data.map(d => d.type === 'advantage' ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.7)'),
-                borderColor: chartData.data.map(d => d.type === 'advantage' ? 'rgb(22, 163, 74)' : 'rgb(220, 38, 38)'),
-                borderWidth: 2,
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    ticks: { color: '#475569' },
-                    grid: { color: '#E2E8F0' }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#475569' } },
+                    tooltip: {
+                        bodyFont: { size: 14 },
+                        titleFont: { size: 16, weight: 'bold' }
+                    }
                 },
-                y: {
-                    ticks: { color: '#475569' },
-                    grid: { display: false }
-                }
+                cutout: '60%'
+            }
+        });
+    }
+
+    function setupConnectivity() {
+        createDoughnutChart('ie-chart', data.connectivity.ie);
+        createDoughnutChart('edge-chart', data.connectivity.edge);
+        document.getElementById('onedrive-info').textContent = data.connectivity.onedrive;
+        document.getElementById('azure-info').textContent = data.connectivity.azure;
+    }
+
+    function setupSecurity() {
+        const cardsContainer = document.getElementById('security-cards-container');
+        const detailsEl = document.getElementById('security-details');
+
+        cardsContainer.addEventListener('click', (e) => {
+            const card = e.target.closest('.security-card');
+            if (!card) return;
+
+            cardsContainer.querySelectorAll('.security-card').forEach(c => c.classList.remove('ring-2', 'ring-blue-500', 'ring-offset-2'));
+            card.classList.add('ring-2', 'ring-blue-500', 'ring-offset-2');
+
+            const item = data.security[card.dataset.sec];
+            detailsEl.innerHTML = `<h3 class="text-xl font-bold text-slate-800 detail-content">${item.title}</h3><p class="mt-2 text-slate-600 detail-content">${item.details}</p>`;
+        });
+    }
+
+    function setupWaaS() {
+        const canvas = document.getElementById('waas-chart');
+        const ctx = canvas.getContext('2d');
+        const detailsEl = document.getElementById('waas-details');
+        const chartData = data.waas;
+
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Impact Score',
+                    data: chartData.data.map(d => d.value),
+                    backgroundColor: chartData.data.map(d => d.type === 'advantage' ? 'rgba(34, 197, 94, 0.7)' : 'rgba(239, 68, 68, 0.7)'),
+                    borderColor: chartData.data.map(d => d.type === 'advantage' ? 'rgb(22, 163, 74)' : 'rgb(220, 38, 38)'),
+                    borderWidth: 2,
+                }]
             },
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed.x !== null) {
-                                label += Math.abs(context.parsed.x);
-                            }
-                            return label;
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { ticks: { color: '#475569' }, grid: { color: '#E2E8F0' } },
+                    y: { ticks: { color: '#475569' }, grid: { display: false } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `Impact Score: ${Math.abs(context.parsed.x)}`
                         }
                     }
-                }
-            },
-            onClick: (evt, elements) => {
-                if (elements.length > 0) {
-                    const index = elements[0].index;
-                    const item = chartData.data[index];
-                    detailsEl.innerHTML = `<h3 class="text-xl font-bold ${item.type === 'advantage' ? 'text-green-700' : 'text-red-700'}">${item.label}</h3><p class="mt-2 text-slate-600">${item.description}</p>`;
+                },
+                onClick: (evt, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const item = chartData.data[index];
+                        detailsEl.innerHTML = `<h3 class="text-xl font-bold ${item.type === 'advantage' ? 'text-green-700' : 'text-red-700'} detail-content">${item.label}</h3><p class="mt-2 text-slate-600 detail-content">${item.description}</p>`;
+                    }
                 }
             }
-        }
-    });
-}
+        });
+        canvas.chart = chart; // Attach chart instance for programmatic access
+    }
 
-document.addEventListener('DOMContentLoaded', initApp);
+    initApp();
+});
 </script>
 
 </body>
